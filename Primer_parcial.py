@@ -1,122 +1,193 @@
 from list_ import List
 from queue_ import Queue
+from stack_ import Stack
 from super_heroes_data import superheroes
 
-Lista_de_superheroes_mia = ["Spiderman", "Capitan America", "Thor", "SuperMan", "Cat Woman", "Hulk", "Black Panther", "Pantera Negra", "Doctor Strange", "Punisher", "Ghost Rider", "Blade", "Deadpool", "Wolverine", "Batman"]
+Lista_mia_superheroes = [ "Spiderman", "Iron Man", "Thor", "Hulk", "Black Widow", "Doctor Strange", "Wolverine", "Falcon", "Deadpool", "Black Panther","Hawkeye", "Vision", "Ant Man", "Scarlet Witch", "Capitan America" ]
 
-def buscar_capitan_recursivo(lista, objetivo, indice=0):
+def buscar_capitan(lista, indice=0):
     if indice >= len(lista):
         return False
-    if lista[indice] == objetivo:
+    if lista[indice] == "Capitan America":
         return True
-    return buscar_capitan_recursivo(lista, objetivo, indice + 1)
+    return buscar_capitan(lista, indice + 1)
 
-def listarsuperheroes(lista, indice=0):
+
+def listar_superheroes(lista, indice=0):
     if indice >= len(lista):
         return
     print(lista[indice])
-    listarsuperheroes(lista, indice + 1)
+    listar_superheroes(lista, indice + 1)
 
-
-def ordenar_por_nombre(personajes):
-    print("Listado ordenado por nombre:")
-    personajes_ordenados = sorted(personajes, key=lambda p: p["name"])
-    for p in personajes_ordenados:
-        print(p["name"])
-
-def buscar_posiciones(personajes, nombre1, nombre2):
-    lista = List()
-    lista.extend(personajes)
-    lista.add_criterion("name", lambda p: p["name"])
-    lista.sort_by_criterion("name")
-    pos1 = lista.search(nombre1, "name")
-    pos2 = lista.search(nombre2, "name")
-    print(f'"{nombre1}" está en la posición: {pos1}')
-    print(f'"{nombre2}" está en la posición: {pos2}')
-
-def listar_villanos(personajes):
-    print("Villanos:")
-    for p in personajes:
-        if p["is_villain"]:
-            print(p["name"])
-
-def villanos_en_cola(personajes):
-    colavillanos = Queue()
-    for p in personajes:
-        if p["is_villain"]:
-            colavillanos.arrive(p)
-    print("Villanos que aparecieron antes de 1980:")
-    for _ in range(colavillanos.size()):
-        villano = colavillanos.move_to_end()
-        if villano["first_appearance"] < 1980:
-            print(f"{villano['name']} ({villano['first_appearance']})")
-
-def filtrar_por_prefijo(personajes, prefijos):
-    print("\nSuperhéroes con iniciales", prefijos, ":")
-    for p in personajes:
-        if p["name"].startswith(prefijos) and not p["is_villain"]:
-            print(p["name"])
-
-def ordenar_por_real_name(personajes):
-    lista = List()
-    lista.extend(personajes)
-    lista.add_criterion("real_name", lambda p: str(p["real_name"]))
-    lista.sort_by_criterion("real_name")
-    print("Listado por nombre real:")
-    for p in lista:
-        print(f"{p['real_name']} ({p['name']})")
-
-def ordenar_heroes_por_aparicion(personajes):
-    lista = List()
-    lista.extend([p for p in personajes if not p["is_villain"]])
-    lista.add_criterion("aparicion", lambda p: p["first_appearance"])
-    lista.sort_by_criterion("aparicion")
-    print("Superhéroes ordenados por aparición:")
-    for p in lista:
-        print(f"{p['name']} ({p['first_appearance']})")  
-
-def modificar_antman(personajes):
-    for p in personajes:
-        if p["name"] == "Ant Man":
-            p["real_name"] = "Scott Lang"
-            print("Ant Man modificado a Scott Lang.")
-            break
-
-def personajes_por_biografia(personajes):
-    print("Personajes con 'time-traveling' o 'suit' en su biografía:")
-    for p in personajes:
-        bio = p["short_bio"].lower()
-        if "time-traveling" in bio or "suit" in bio:
-            print(f"{p['name']}: {p['short_bio']}")  
-
-def eliminar_personajes(personajes, nombres_a_eliminar):
-    lista = List()
-    lista.extend(personajes)
-    lista.add_criterion("name", lambda p: p["name"])
-    lista.sort_by_criterion("name")
-    for nombre in nombres_a_eliminar:
-        eliminado = lista.delete_value(nombre, "name")
-        if eliminado:
-            print(f"Se eliminó: {eliminado['name']}")
-            print("Info:", eliminado)
-        else:
-            print(f"{nombre} no estaba en la lista.")
-
-
-if buscar_capitan_recursivo(Lista_de_superheroes_mia, "Capitan America"):
-    print("El capitan se encuentra en la lista")
+if buscar_capitan(Lista_mia_superheroes):
+    print("Capitan America está en la lista.")
 else:
-    print("No se encuentra en la lista")
+    print("Capitan America no está en la lista.")
 
-listarsuperheroes(Lista_de_superheroes_mia)
+print("Listado de superhéroes:")
+listar_superheroes(Lista_mia_superheroes)
 
-ordenar_por_nombre(superheroes)
-buscar_posiciones(superheroes, "The Thing", "Rocket Raccoon")
-listar_villanos(superheroes)
-villanos_en_cola(superheroes)
-filtrar_por_prefijo(superheroes, ("Bl", "G", "My", "W"))
-ordenar_por_real_name(superheroes)
-ordenar_heroes_por_aparicion(superheroes)
-modificar_antman(superheroes)
-personajes_por_biografia(superheroes)
-eliminar_personajes(superheroes, ["Electro", "Baron Zemo"])
+def criterio_nombre(personaje):
+    return personaje["name"]
+
+lista = List()
+
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+lista.add_criterion("name", criterio_nombre)
+
+lista.sort_by_criterion("name")
+
+print("Listado ordenado por nombre:")
+lista.show()
+
+def criterio_nombre(personaje):
+    return personaje["name"]
+
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+lista.add_criterion("name", criterio_nombre)
+lista.sort_by_criterion("name")
+
+pos_thing = lista.search("The Thing", "name")
+pos_rocket = lista.search("Rocket Raccoon", "name")
+
+print("The Thing está en la posición:", pos_thing)
+print("Rocket Raccoon está en la posición:", pos_rocket)
+
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+print("Villanos en la lista:")
+for i in range(len(lista)):
+    personaje = lista[i]
+    if personaje["is_villain"] == True:
+        print(personaje["name"])
+
+
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+cola_villanos = Queue()
+
+for i in range(len(lista)):
+    personaje = lista[i]
+    if personaje["is_villain"] == True:
+        cola_villanos.arrive(personaje)
+
+print("Villanos que aparecieron antes de 1980:")
+cantidad = cola_villanos.size()
+i = 0
+while i < cantidad:
+    villano = cola_villanos.attention()
+    if villano["first_appearance"] < 1980:
+        print(villano["name"], "-", villano["first_appearance"])
+    i = i + 1
+
+prefijos = ["Bl", "G", "My", "W"]
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+print("Superhéroes con Bl, G, My o W:")
+for i in range(len(lista)):
+    nombre = lista[i]["name"]
+    coincide = False
+
+    for j in range(len(prefijos)):
+        if nombre.startswith(prefijos[j]):
+            coincide = True
+
+    if coincide:
+        print(nombre)
+        
+def criterio_nombre_real(personaje):
+    return personaje["real_name"]
+
+lista = List()
+for i in range(len(superheroes)):
+    if superheroes[i]["real_name"] is not None:
+        lista.append(superheroes[i])
+
+lista.add_criterion("real_name", criterio_nombre_real)
+lista.sort_by_criterion("real_name")
+
+print("Listado ordenado por nombre real (ascendente):")
+for i in range(len(lista)):
+    personaje = lista[i]
+    print(personaje["real_name"], "-", personaje["name"])
+
+def criterio_aparicion(personaje):
+    return personaje["first_appearance"]
+
+
+lista = List()
+for i in range(len(superheroes)):
+    if superheroes[i]["is_villain"] == False:
+        lista.append(superheroes[i])
+
+lista.add_criterion("first_appearance", criterio_aparicion)
+lista.sort_by_criterion("first_appearance")
+
+print("Superhéroes ordenados por fecha de aparición:")
+for i in range(len(lista)):
+    personaje = lista[i]
+    print(personaje["first_appearance"], "-", personaje["name"])
+
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+print("Nombre real de Ant Man a Scott Lang")
+for i in range(len(lista)):
+    if lista[i]["name"] == "Ant Man":
+        lista[i]["real_name"] = "Scott Lang"
+
+for i in range(len(lista)):
+    if lista[i]["name"] == "Ant Man":
+        print(lista[i])
+    
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+print("Personajes con 'time-traveling' o 'suit' en su biografía:")
+for i in range(len(lista)):
+    bio = lista[i]["short_bio"]
+    if "time-traveling" in bio or "suit" in bio:
+        print(lista[i]["name"])
+        print("Biografía:", bio)
+    
+lista = List()
+for i in range(len(superheroes)):
+    lista.append(superheroes[i])
+
+
+def criterio_nombre(personaje):
+    return personaje["name"]
+
+
+lista.add_criterion("name", criterio_nombre)
+lista.sort_by_criterion("name")
+
+
+eliminado_electro = lista.delete_value("Electro", "name")
+eliminado_zemo = lista.delete_value("Baron Zemo", "name")
+
+
+if eliminado_electro is not None:
+    print("Electro eliminado:")
+    print(eliminado_electro)
+else:
+    print("Electro no estaba en la lista.")
+
+if eliminado_zemo is not None:
+    print("Baron Zemo eliminado:")
+    print(eliminado_zemo)
+else:
+    print("Baron Zemo no estaba en la lista.")
